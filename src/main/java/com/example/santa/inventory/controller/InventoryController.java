@@ -29,9 +29,12 @@ public class InventoryController {
 
     //창고별 재고 list
     @GetMapping("readInventory")
+    @ResponseBody
     public List<InventoryDTO> readInventory() {
-
-        return null;
+        List<InventoryDTO> list = inventoryService.readInventory();
+        System.out.println("======= 창고별 재고 list =======");
+        System.out.println(list);
+        return list;
     }
 
     //창고 list 선택
@@ -44,15 +47,21 @@ public class InventoryController {
         return list;
     }
 
-    //창고 row 추가
+    //창고 column 추가
     @PostMapping("addWarehouse")
     @ResponseBody
-    public List<InventoryDTO> addWarehouse(String warehouseName) {
+    public List<InventoryDTO> addWarehouse(@RequestBody  InventoryDTO inventoryDTO ) {
+        int warehouseId = inventoryDTO.getWarehouseId();
 
-        return null;
+        System.out.println("warehouseId : " + warehouseId);
+        List<InventoryDTO> list = inventoryService.addWarehouse(warehouseId);
+        System.out.println("========= 창고 column 추가 =========");
+        System.out.println(list);
+
+        return list;
     }
 
-    //창고 row 삭제
+    //창고 column 삭제
     
     //*************************************************
     //******************** 품목별 재고 조회 **************

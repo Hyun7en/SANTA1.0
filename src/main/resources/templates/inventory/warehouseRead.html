@@ -106,10 +106,10 @@
 
                 body += `
             <tr>
-                <td class="text-center">${item.productId}</td>
+                <td id="warehouseProductId" class="text-center">${item.productId}</td>
                 <td class="text-center">${item.productName}</td>
-                <td class="text-center">${item.inventoryQuantity}</td>
-                <td></td> <!-- 창고 추가 가능 -->
+                <td class="text-center">${item.totalInventory}</td>
+                <!-- 창고 추가 가능 -->
             </tr>
         `;
             });
@@ -121,14 +121,14 @@
         function readInventory() {
             sendRequest("/inventory/readInventory", "get", null, data => {
                 renderTable("tbody", data);
-                $("#basic-datatables").DataTable();
             });
         }
 
-        // 창고 리스트를 불러오고 모달 표시
+        //창고 추가
         function addWarehouse() {
             axios.get("/inventory/warehouseList")
                 .then(response => {
+                    console.log(response.data);
                     const select = document.getElementById("warehouseSelect");
                     if (!select) {
                         console.error("창고 리스트 select 요소를 찾을 수 없습니다.");
@@ -172,10 +172,85 @@
             }
         });
 
+        // 창고 선택 시 addSelectedWarehouse 실행
+        document.addEventListener("DOMContentLoaded", () => {
+            const select = document.getElementById("warehouseSelect");
+            if (select) {
+                select.addEventListener("change", addSelectedWarehouse);
+            }
+        });
+
         //창고 list에서 선택시 column 추가
-        function addSelectedWarehouse(){
+        function addSelectedWarehouse() {
+            const select = document.getElementById("warehouseSelect");
+            if (!select) {
+                console.error("창고 리스트 select 요소를 찾을 수 없습니다.");
+                return;
+            }
+
+            const selectedOption = select.options[select.selectedIndex];
+            if (!selectedOption || !selectedOption.value) {
+                console.error("선택된 창고가 없습니다.");
+                return;
+            }
+
+            const warehouseId = selectedOption.value; // 선택된 창고 ID
+            const warehouseName = selectedOption.textContent; // 선택된 창고 이름
+
+
+            // 비동기로 해당 창고의 상품 재고 데이터를 가져와 테이블 업데이트
+            axios.post("/inventory/addWarehouse",{
+                warehouseId})
+                .then(response =>{
+                    const warehouseData = response.data;
+                    console.log("받은 데이터:", warehouseData);
+
+                    // 테이블 업데이트
+                    updateTableWithWarehouseData(warehouseId, warehouseName, warehouseData);
+
+                })
+                .catch(error => {
+                    console.log(error);
+                });
 
         }
+
+        // 테이블에 새 창고 열 추가
+        function updateTableWithWarehouseData(warehouseId, warehouseName, warehouseData) {
+            const table = document.getElementById("basic-datatables");
+            if (!table) {
+                console.error("테이블을 찾을 수 없습니다.");
+                return;
+            }
+
+            const thead = table.querySelector("thead tr");
+            const tbody = table.querySelector("tbody");
+
+            // 1. 테이블 헤더에 새 창고 열 추가 (중복 방지)
+            if (document.getElementById(`warehouse-header-${warehouseId}`)) {
+                console.warn(`창고 ${warehouseName}는 이미 추가되었습니다.`);
+                return;
+            }
+            const th = document.createElement("th");
+            th.textContent = `창고 ${warehouseName}`;
+            th.id = `warehouse-header-${warehouseId}`;
+            thead.appendChild(th);
+
+            // 2. 테이블 본문 업데이트
+            const rows = tbody.querySelectorAll("tr");
+            warehouseData.forEach((item, index) => {
+                const row = rows[index]; // 순서대로 매칭
+                if (row) {
+                    const td = document.createElement("td");
+                    td.textContent = item.warehouseQuantity || 0; // 창고의 재고량
+                    td.setAttribute("data-warehouse-id", warehouseId);
+                    row.appendChild(td);
+                } else {
+                    console.warn(`행 ${index + 1}을 찾을 수 없습니다.`);
+                }
+            });
+        }
+
 
         //삭제 버튼 누르면 column 삭제
         function deleteWarehouse(){
