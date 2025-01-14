@@ -8,6 +8,7 @@
         <result property="productName" column="product_name"/>
         <result property="capacity" column="capacity"/>
         <result property="inventoryQuantity" column="inventory_quantity"/>
+        <result property="warehouseId" column="warehouse_id"/>
         <result property="warehouseName" column="warehouse_name"/>
         <result property="warehouseQuantity" column="warehouse_quantity"/>
         <result property="categoryName" column="category_name"/>
@@ -19,13 +20,24 @@
     <!--    ******************** 창고별 재고 조회 **************-->
     <!--    *************************************************-->
     <!-- 창고별 재고 list(창고id 있을 시/없을 시) -->
-    <select id="readInventory">
+    <select id="readInventory" parameterType="map" resultMap="WarehouseInventoryResultMap">
 
     </select>
 
-    <!-- 상품명 검색 -->
+    <!-- 창고 이름 / 창고 아이디 list -->
+    <select id="getWarehouseList" resultType="com.example.santa.inventory.vo.InventoryDTO">
+        SELECT
+            warehouse_id AS warehouseId,
+            name AS warehouseName
+        FROM
+            Warehouses
+        ORDER BY name
+    </select>
+
 
     <!-- 창고 row 추가 -->
+
+    <!-- 창고 row 삭제 -->
 
     <!--    *************************************************-->
     <!--    ******************** 품목별 재고 조회 **************-->

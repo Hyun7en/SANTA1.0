@@ -34,14 +34,16 @@ public class InventoryController {
         return null;
     }
 
-    //상품명 검색
-    @PostMapping("searchByProductName")
+    //창고 list 선택
+    @GetMapping("warehouseList")
     @ResponseBody
-    public List<InventoryDTO> searchByProductName(String productName) {
-
-        return null;
+    public List<InventoryDTO> getWarehouseList() {
+        List<InventoryDTO> list = inventoryService.getWarehouseList();
+        System.out.println("====== 창고 list ======");
+        System.out.println(list);
+        return list;
     }
-    
+
     //창고 row 추가
     @PostMapping("addWarehouse")
     @ResponseBody
@@ -49,6 +51,8 @@ public class InventoryController {
 
         return null;
     }
+
+    //창고 row 삭제
     
     //*************************************************
     //******************** 품목별 재고 조회 **************

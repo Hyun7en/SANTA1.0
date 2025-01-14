@@ -14,9 +14,12 @@ public interface InventoryMapper {
 
     //창고별 재고 list
 
-    //상품명 검색
+    //창고 list 선택
+    List<InventoryDTO> getWarehouseList();
 
     //창고 row 추가
+
+    //창고 row 삭제
 
     //*************************************************
     //******************** 품목별 재고 조회 **************

@@ -12,6 +12,7 @@ public class InventoryDTO {
     private String productName;
     private int capacity;
     private int inventoryQuantity; // 창고별 재고들을 합친 총 재고
+    private int warehouseId;
     private String warehouseName;
     private int warehouseQuantity; // 창고별 재고
     private String categoryName;
