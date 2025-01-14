@@ -99,7 +99,13 @@
                         <td th:text="${TransitDTO.warehouseLocation}" class="text-center"></td>
                         <td th:text="${TransitDTO.branchName}" class="text-center"></td>
                         <td th:text="${TransitDTO.branchLocation}" class="text-center"></td>
-                        <td th:text="${TransitDTO.transitStatus}" class="text-center"></td>
+                        <td th:text="${TransitDTO.transitStatus}"
+                            th:classappend="${TransitDTO.transitStatus == '배송완료' ? 'text-success fw-bold'
+                             : (TransitDTO.transitStatus == '배송중' ? 'text-warning fw-bord'
+                             : (TransitDTO.transitStatus == '배송대기' ? 'text-primary fw-bord'
+                             : (TransitDTO.transitStatus == '배송승인' ? 'text-info fw-bord'
+                             : (TransitDTO.transitStatus == '배송거절' ? 'text-danger fw-bord' : ''))))}"
+                            class="text-center"></td>
                     </tr>
                     </tbody>
                 </table>

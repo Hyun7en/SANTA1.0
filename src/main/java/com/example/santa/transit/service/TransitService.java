@@ -18,4 +18,16 @@ public class TransitService {
         System.out.println("transits >>>>>>>>>>>> " + transits);
         return transits;
     }
+
+    public void updateTransit(List<Integer> transitIds) {
+        transitMapper.updateTransitStatus(transitIds);
+    }
+
+    public void rejectTransit(List<Integer> transitIds){
+        transitMapper.updateTransitStatusRejection(transitIds);
+    }
+
+    public List<TransitDTO> getCoordinatesForTransits(List<Integer> transitIds) {
+        return transitMapper.getCoordinatesForTransit(transitIds);
+    }
 }
