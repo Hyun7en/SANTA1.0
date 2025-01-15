@@ -77,7 +77,7 @@
         WHERE t.transit_id IN
         <foreach collection="transitIds" item="id" open="(" separator="," close=")">
             #{id}
-        </foreach>;
+        </foreach>
     </select>
 
 </mapper>
