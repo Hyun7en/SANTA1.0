@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -18,10 +19,21 @@ public class InventoryService {
     //*************************************************
 
     //창고별 재고 list
+    public List<InventoryDTO> readInventory() {
+        return inventoryMapper.readInventory();
+    }
 
-    //상품명 검색
+    //창고 list 선택
+    public List<InventoryDTO> getWarehouseList() {
+        return inventoryMapper.getWarehouseList();
+    }
 
-    //창고 row 추가
+    //창고 column 추가
+    public List<InventoryDTO> addWarehouse(int warehouseId) {
+        return inventoryMapper.addWarehouse(warehouseId);
+    }
+
+    //창고 column 삭제
 
     //*************************************************
     //******************** 품목별 재고 조회 **************
