@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/login/**", "/css/**", "/js/**", "/images/**", "/assets2/**", "/register", "/find","/api/login", "/user", "/submit", "/register/**").permitAll() // 로그인 및 정적 리소스 허용
 
-                        .requestMatchers("/home/**", "/admin/**", "/outgoing/**", "/transit/**", "/inventory/**", "/order/**", "/board/**", "/incoming/**","/notice/**","/reply/**").authenticated() // 인증된 사용자만 허용
+                        .requestMatchers("/home/**", "/admin/**", "/outgoing/**", "/transit/**", "/inventory/**", "/order/**", "/board/**", "/incoming/**","/notice/**","/reply/**", "/profile/**").authenticated() // 인증된 사용자만 허용
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
                 )
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화

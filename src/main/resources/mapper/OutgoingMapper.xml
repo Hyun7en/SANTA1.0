@@ -18,7 +18,44 @@
         <result column="totalPrice" property="totalPrice"/>
     </resultMap>
 
-<!--전체 출고 조회-->
+
+    <insert id="insertTransitRecords">
+        INSERT INTO Transit (outgoing_id, warehouse_id, branch_id, product_id, quantity, transit_date, status)
+        SELECT
+            o.outgoing_id,
+            o.warehouse_id,
+            o.branch_id,
+            o.product_id,
+            o.quantity,
+            NOW(),
+            '배송대기'
+        FROM Outgoing o
+        WHERE o.outgoing_id IN
+        <foreach item="id" collection="outgoingIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </insert>
+
+
+    <update id="updateOutgoingStatus" parameterType="com.example.santa.outgoing.vo.OutgoingDTO">
+        UPDATE Outgoing
+        SET status= '승인'
+        WHERE outgoing_id IN
+        <foreach item="id" collection="outgoingIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="updateOutgoingStatusRejection" parameterType="com.example.santa.outgoing.vo.OutgoingDTO">
+        UPDATE Outgoing
+        SET status= '거절'
+        WHERE outgoing_id IN
+        <foreach item="id" collection="outgoingIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!--전체 출고 조회-->
     <select id="findAllOutgoing"
 
             resultMap="OutgoingDetailsResult">

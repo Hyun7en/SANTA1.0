@@ -1,138 +1,211 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
-<body>
-<div th:fragment="content">
-    <!-- 지도 결과 표시 -->
-    <p id="result"></p>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>simpleMap</title>
+    <script	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=vdiErrenLm6fpMRq3LdEs39qwmYDVCnN3fBjFwDS"></script>
+    <!--  <script th:src="'https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=' + ${tmapApiKey}"></script>-->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var headers = {};
+        headers["appKey"] = /*[[${tmapApiKey}]]*/ ''; // Thymeleaf로 동적으로 삽입된 API 키
+        /*]]>*/
+    </script>
 
-    <!-- 지도 컨테이너 -->
-    <div id="map_wrap" class="map_wrap">`
-        <div id="map_div" style="width: 100%; height: 400px;"></div>
-    </div>
-
-    <!-- 지도 초기화 스크립트 -->
     <script type="text/javascript">
+
+
+
         var map;
+        var marker_s, marker_e;
 
-        function initTmap() {
-            try {
-                // Tmap 지도 초기화
-                map = new Tmapv2.Map("map_div", {
-                    center: new Tmapv2.LatLng(37.4751739, 126.8804459),
-                    width: "100%",
-                    height: "400px",
-                    zoom: 15,
-                    zoomControl: true,
-                    scrollwheel: true
-                });
+        //경로그림정보
+        var drawInfoArr = [];
 
-                // 시작 마커
-                var marker_s = new Tmapv2.Marker({
-                    position: new Tmapv2.LatLng(37.4751739, 126.8804459),
-                    icon: "/assets/img/map/pin_r_s.png",
-                    iconSize: new Tmapv2.Size(24, 30),
-                    map: map
-                });
 
-                // 도착 마커
-                var marker_e = new Tmapv2.Marker({
-                    position: new Tmapv2.LatLng(37.5370339, 126.6424644),
-                    icon: "/upload/tmap/marker/pin_r_m_e.png",
-                    iconSize: new Tmapv2.Size(24, 38),
-                    map: map
-                });
+        function initTmap(){
+            // 1. 지도 띄우기
+            map = new Tmapv2.Map("map_div", {
+                center: new Tmapv2.LatLng(37.56701114710962, 126.9973611831669),
+                width : "100%",
+                height : "400px",
+                zoom : 15,
+                zoomControl : true,
+                scrollwheel : true
+            });
 
-                // 추가 마커들 (예시)
-                var markersData = [
-                    { lat: 37.5134507, lng: 127.0527081, icon: "/resources/static/assets/img/map/pin_r_s.png" },
-                    { lat: 37.56568310756034, lng: 127.00221495976581, icon: "/upload/tmap/marker/pin_b_m_2.png" },
-                    { lat: 37.570369, lng: 126.992153, icon: "/upload/tmap/marker/pin_b_m_3.png" },
-                    { lat: 37.56335290252303, lng: 127.00352387777271, icon: "/upload/tmap/marker/pin_b_m_4.png" },
-                    { lat: 37.570721714117965, lng: 127.00186090818215, icon: "/upload/tmap/marker/pin_b_m_5.png" },
-                    { lat: 37.56515390827723, lng: 126.99066536776698, icon: "/upload/tmap/marker/pin_b_m_6.png" }
-                ];
+            // 시작, 도착 심볼찍기
+            // 시작
+            marker_s = new Tmapv2.Marker({
+                position : new Tmapv2.LatLng(37.568085523663385, 126.98605733268329),
+                icon : "/upload/tmap/marker/pin_r_m_s.png",
+                iconSize : new Tmapv2.Size(24, 38),
+                map:map
+            });
 
-                markersData.forEach(function(data) {
-                    new Tmapv2.Marker({
-                        position: new Tmapv2.LatLng(data.lat, data.lng),
-                        icon: data.icon,
-                        iconSize: new Tmapv2.Size(24, 38),
-                        map: map
-                    });
-                });
+            // 도착
+            marker_e = new Tmapv2.Marker({
+                position : new Tmapv2.LatLng(37.56445848334345, 127.00973587385866),
+                icon : "/upload/tmap/marker/pin_r_m_e.png",
+                iconSize : new Tmapv2.Size(24, 38),
+                map:map
+            });
 
-                // 경로 최적화 요청 (AJAX)
-                var headers = {};
-                headers["appKey"] = "[[${tmapApiKey}]]"; // Thymeleaf로 전달된 API 키 사용
+            marker = new Tmapv2.Marker({
+                position : new Tmapv2.LatLng(37.56626352138058, 126.98735015742581),
+                icon : "/upload/tmap/marker/pin_b_m_1.png",
+                iconSize : new Tmapv2.Size(24, 38),
+                map:map
+            });
 
-                $.ajax({
-                    type:"POST",
-                    headers : headers,
-                    url:"https://apis.openapi.sk.com/tmap/routes/routeOptimization10?version=1&format=json",
-                    async:false,
-                    contentType:"application/json",
-                    data: JSON.stringify({
-                        reqCoordType:"WGS84GEO",
-                        resCoordType:"EPSG3857",
-                        startName:"출발",
-                        startX:"126.8804459",
-                        startY:"37.4751739",
-                        endName:"도착",
-                        endX:"126.6424644",
-                        endY:"37.5370339",
-                        searchOption:"0",
-                        viaPoints:[
-                            { viaPointId:"test01", viaPointName:"test01", viaX:"126.992153", viaY:"37.570369" },
-                            { viaPointId:"test02", viaPointName:"test02", viaX:"127.00221495976581", viaY:"37.56568310756034" },
-                            { viaPointId:"test03", viaPointName:"test03", viaX:"126.992153", viaY:"37.56568310756034" },
-                            { viaPointId:"test04", viaPointName:"test04", viaX:"127.00352387777271", viaY:"37.56335290252303" },
-                            { viaPointId:"test05", viaPointName:"test05", viaX:"127.00186090818215", viaY:"37.570721714117965" },
-                            { viaPointId:"test06", viaPointName:"test06", viaX:"126.99066536776698", viaY:"37.56515390827723" }
-                        ]
-                    }),
-                    success:function(response) {
-                        var resultData = response.properties;
-                        var resultFeatures = response.features;
+            marker = new Tmapv2.Marker({
+                position : new Tmapv2.LatLng(37.56568310756034, 127.00221495976581),
+                icon : "/upload/tmap/marker/pin_b_m_2.png",
+                iconSize : new Tmapv2.Size(24, 38),
+                map:map
+            });
 
-                        // 결과 출력
-                        var tDistance = "총 거리 : " + (resultData.totalDistance / 1000).toFixed(1) + "km, ";
-                        var tTime = "총 시간 : " + (resultData.totalTime / 60).toFixed(0) + "분, ";
-                        var tFare = "총 요금 : " + resultData.totalFare + "원";
+            marker = new Tmapv2.Marker({
+                position : new Tmapv2.LatLng(37.570369, 126.992153),
+                icon : "/upload/tmap/marker/pin_b_m_3.png",
+                iconSize : new Tmapv2.Size(24, 38),
+                map:map
+            });
 
-                        $("#result").text(tDistance + tTime + tFare);
+            marker = new Tmapv2.Marker({
+                position : new Tmapv2.LatLng(37.56335290252303, 127.00352387777271),
+                icon : "/upload/tmap/marker/pin_b_m_4.png",
+                iconSize : new Tmapv2.Size(24, 38),
+                map:map
+            });
 
-                        // 경로 그리기
-                        resultFeatures.forEach(function(feature) {
-                            if (feature.geometry.type === "LineString") {
-                                var drawInfoArr = feature.geometry.coordinates.map(function(coord) {
-                                    var point = new Tmapv2.Point(coord[0], coord[1]);
-                                    var geoCoord = Tmapv2.Projection.convertEPSG3857ToWGS84GEO(point);
-                                    return new Tmapv2.LatLng(geoCoord._lat, geoCoord._lng);
-                                });
+            marker = new Tmapv2.Marker({
+                position : new Tmapv2.LatLng(37.570721714117965, 127.00186090818215),
+                icon : "/upload/tmap/marker/pin_b_m_5.png",
+                iconSize : new Tmapv2.Size(24, 38),
+                map:map
+            });
 
-                                new Tmapv2.Polyline({
-                                    path : drawInfoArr,
-                                    strokeColor : "#FF0000",
-                                    strokeWeight : 6,
-                                    map : map
-                                });
+            marker = new Tmapv2.Marker({
+                position : new Tmapv2.LatLng(37.56515390827723, 126.99066536776698),
+                icon : "/upload/tmap/marker/pin_b_m_6.png",
+                iconSize : new Tmapv2.Size(24, 38),
+                map:map
+            });
+
+            var headers = {};
+            headers["appKey"]="vdiErrenLm6fpMRq3LdEs39qwmYDVCnN3fBjFwDS";
+
+            $.ajax({
+                type:"POST",
+                headers : headers,
+                url:"https://apis.openapi.sk.com/tmap/routes/routeOptimization10?version=1&format=json",//
+                async:false,
+                contentType: "application/json",
+                data: JSON.stringify({
+                    "reqCoordType": "WGS84GEO",
+                    "resCoordType" : "EPSG3857",
+                    "startName": "출발",
+                    "startX": "126.98605733268329",
+                    "startY": "37.568085523663385",
+                    "startTime": "201711121314",
+                    "endName": "도착",
+                    "endX": "127.00973587385866",
+                    "endY": "37.56445848334345",
+                    "searchOption" : "0",
+                    "viaPoints": [
+                        {
+                            "viaPointId": "test01",
+                            "viaPointName": "test01",
+                            "viaX": "126.98735015742581",
+                            "viaY": "37.56626352138058",
+                        },
+                        {
+                            "viaPointId": "test02",
+                            "viaPointName": "test02",
+                            "viaX": "127.00221495976581",
+                            "viaY": "37.56568310756034",
+                        },
+                        {
+                            "viaPointId": "test03",
+                            "viaPointName": "test03",
+                            "viaX": "126.992153",
+                            "viaY": "37.570369",
+                        },
+                        {
+                            "viaPointId": "test04",
+                            "viaPointName": "test04",
+                            "viaX": "127.00352387777271",
+                            "viaY": "37.56335290252303",
+                        },
+                        {
+                            "viaPointId": "test05",
+                            "viaPointName": "test05",
+                            "viaX": "127.00186090818215",
+                            "viaY": "37.570721714117965",
+                        },
+                        {
+                            "viaPointId": "test06",
+                            "viaPointName": "test06",
+                            "viaX": "126.99066536776698",
+                            "viaY": "37.56515390827723",
+                        }
+                    ]
+                }),
+                success:function(response){
+                    var resultData = response.properties;
+                    var resultFeatures = response.features;
+
+                    // 결과 출력
+                    var tDistance = "총 거리 : " + (resultData.totalDistance/1000).toFixed(1) + "km,  ";
+                    var tTime = "총 시간 : " + (resultData.totalTime/60).toFixed(0) + "분,  ";
+                    var tFare = "총 요금 : " + resultData.totalFare + "원";
+
+                    $("#result").text(tDistance+tTime+tFare);
+
+                    for(var i in resultFeatures) {
+                        var geometry = resultFeatures[i].geometry;
+                        var properties = resultFeatures[i].properties;
+                        var polyline_;
+
+                        drawInfoArr = [];
+
+                        if(geometry.type == "LineString") {
+                            for(var j in geometry.coordinates){
+                                // 경로들의 결과값(구간)들을 포인트 객체로 변환
+                                var latlng = new Tmapv2.Point(geometry.coordinates[j][0], geometry.coordinates[j][1]);
+                                // 포인트 객체를 받아 좌표값으로 변환
+                                var convertPoint = new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(latlng);
+                                // 포인트객체의 정보로 좌표값 변환 객체로 저장
+                                var convertChange = new Tmapv2.LatLng(convertPoint._lat, convertPoint._lng);
+
+                                drawInfoArr.push(convertChange);
                             }
-                        });
-                    },
-                    error:function(request,status,error){
-                        console.error("에러 발생:", request.status, request.responseText, error);
-                        $("#result").text("경로 데이터를 가져오는 중 오류가 발생했습니다.");
+
+                            polyline_ = new Tmapv2.Polyline({
+                                path : drawInfoArr,
+                                strokeColor : "#FF0000",
+                                strokeWeight: 6,
+                                map : map
+                            });
+                        }
                     }
-                });
-            } catch (error) {
-                console.error("지도 초기화 중 오류 발생:", error);
-                document.getElementById("result").innerText = "지도를 불러오는 중 오류가 발생했습니다.";
-            }
+                },
+                error:function(request,status,error){
+                    console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                }
+            });
         }
 
-        // DOMContentLoaded 이벤트로 initTmap 실행
-        document.addEventListener("DOMContentLoaded", initTmap);
+
     </script>
+<body onload="initTmap()"><!-- 맵 생성 실행 -->
+<p id="result"></p>
+
+
+<div id="map_wrap" class="map_wrap">
+    <div id="map_div"></div>
 </div>
 </body>
+</html>

@@ -19,7 +19,26 @@
         <result column="branchLongitude" property="branchLongitude"/>
     </resultMap>
 
-<!--전체 출고 조회-->
+    <update id="updateTransitStatus" parameterType="com.example.santa.transit.vo.TransitDTO">
+        UPDATE Transit
+        SET status= '배송승인'
+        WHERE transit_id IN
+        <foreach item="id" collection="transitIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+    </update>
+
+    <update id="updateTransitStatusRejection">
+        UPDATE Transit
+        SET status= '배송거절'
+        WHERE transit_id IN
+        <foreach item="id" collection="transitIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!--전체 출고 조회-->
     <select id="findAllTransit"
             parameterType="string"
             resultMap="TransitResult">
@@ -43,6 +62,22 @@
                 JOIN
             branches b ON t.branch_id = b.branch_id
 
+    </select>
+
+    <select id="getCoordinatesForTransit" resultMap="TransitResult">
+        SELECT
+        t.transit_id AS transitId,
+        w.latitude AS warehouseLatitude,
+        w.longitude AS warehouseLongitude,
+        b.latitude AS branchLatitude,
+        b.longitude AS branchLongitude
+        FROM Transit t
+        JOIN Warehouses w ON t.warehouse_id = w.warehouse_id
+        JOIN Branches b ON t.branch_id = b.branch_id
+        WHERE t.transit_id IN
+        <foreach collection="transitIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </select>
 
 </mapper>
