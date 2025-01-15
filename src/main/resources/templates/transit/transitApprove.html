@@ -60,8 +60,9 @@
                 <!-- 테이블 바디 -->
                 <tbody>
                 <!-- 상태가 '배송대기'인 데이터만 렌더링 -->
-<!--                <tr th:each="transit : ${list}" th:if="${transit.transitStatus} == '배송대기' || ${transit.transitStatus} == '배송승인'">-->
-                <tr th:each="transit : ${list}" th:if="${transit.transitStatus} == '배송대기'">
+<!--                <tr th:each="transit : ${list}"-->
+<!--                    th:if="${transit.transitStatus} == '배송대기' || ${transit.transitStatus} == '배송승인'">-->
+                   <tr th:each="transit : ${list}" th:if="${transit.transitStatus} == '배송대기'">
                     <!-- 체크박스 칼럼 -->
                     <td><input type="checkbox" name="select-row" th:value="${TransitDTO.transitId}"></td>
 
@@ -76,11 +77,19 @@
                     <td th:text="${TransitDTO.transitStatus}"
                         th:classappend="${TransitDTO.transitStatus == '배송대기' ? 'text-primary fw-bord' : ''}"
                         class="text-center"></td>
+<!--                    <td th:text="${TransitDTO.transitStatus}"-->
+<!--                        th:classappend="${TransitDTO.transitStatus == '배송대기' ? 'text-primary fw-bord'-->
+<!--                        : (TransitDTO.transitStatus == '배송승인' ? 'text-info fw-bord fw-bord' : '')}"-->
+<!--                        class="text-center"></td>-->
                 </tr>
+
                 </tbody>
                 <!-- 플로팅 버튼 -->
+                <button id="openNewWindow">배송 경로 최적화</button>
+
                 <div id="floating-button-approve" onclick="confirmApproval()">배송 승인</div>
                 <div id="floating-button-reject" onclick="confirmRejection()">배송 거절</div>
+
 <!--                <div id="floating-button-mapRoute" onclick="calculateRoute()">배송시간 및 비용확인</div>-->
 
             </table>
@@ -101,6 +110,7 @@
                 $("input[name='select-row']").prop("checked", this.checked);
             });
         });
+
         // 플로팅 버튼 클릭 이벤트
         function confirmApproval() {
 
@@ -137,9 +147,8 @@
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ transitIds: selectedIds })
-                    })
-                        .then(response => response.json())
+                        body: JSON.stringify({transitIds: selectedIds})
+                    }).then(response => response.json())
                         .then(data => {
                             if (data.success) {
                                 Swal.fire('승인 완료!', '배송이 승인되었습니다.', 'success')
@@ -151,9 +160,27 @@
                         .catch(error => {
                             Swal.fire('오류!', '서버와의 통신 중 문제가 발생했습니다.', 'error');
                         });
+
                 }
             });
         }
+    </script>
+
+    <script>
+        // 새 창 열기 버튼 이벤트
+        document.getElementById('openNewWindow').addEventListener('click', () => {
+            // 새 창 열기
+            const newWindow = window.open(
+                'map.html', // 열 HTML 파일 경로 (같은 디렉토리에 있어야 함)
+                '_blank',       // 새 창 또는 새 탭으로 열기
+                'width=800,height=600,scrollbars=yes' // 창 크기 및 옵션 설정
+            );
+
+            // 새 창이 열리지 않을 경우 처리 (팝업 차단 방지용)
+            if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                alert('팝업이 차단되었습니다. 브라우저 설정에서 팝업을 허용해주세요.');
+            }
+        });
     </script>
 
     <script>
@@ -219,77 +246,9 @@
             });
         }
     </script>
-
-    <!--&lt;!&ndash;    ===========Map API START=========    &ndash;&gt;-->
-    <!--    <script>-->
-    <!--        function calculateRoute() {-->
-    <!--            const selectedRows = document.querySelectorAll("input[name='select-row']:checked");-->
-    <!--            const selectedIds = Array.from(selectedRows).map(row => row.value);-->
-
-    <!--            if (selectedIds.length === 0) {-->
-    <!--                Swal.fire({-->
-    <!--                    title: '선택된 배송 건이 없습니다.',-->
-    <!--                    icon: 'warning',-->
-    <!--                    confirmButtonText: '확인'-->
-    <!--                });-->
-    <!--                return;-->
-    <!--            }-->
-
-    <!--            // 배송 상태 확인-->
-    <!--            let hasPendingStatus = false; // '배송대기' 상태 여부 확인-->
-    <!--            selectedRows.forEach(row => {-->
-    <!--                const statusCell = row.parentElement.parentElement.querySelector("td:nth-child(9)"); // 배송상태 열-->
-    <!--                if (statusCell && statusCell.textContent.trim() === '배송대기') {-->
-    <!--                    hasPendingStatus = true;-->
-    <!--                }-->
-    <!--            });-->
-
-    <!--            if (hasPendingStatus) {-->
-    <!--                Swal.fire({-->
-    <!--                    title: '배송대기 상태는 처리할 수 없습니다.',-->
-    <!--                    text: '배송승인 상태의 항목만 선택해주세요.',-->
-    <!--                    icon: 'error',-->
-    <!--                    confirmButtonText: '확인'-->
-    <!--                });-->
-    <!--                return; // 작업 중단-->
-    <!--            }-->
-
-    <!--            // 서버로 선택된 배송 ID 전송-->
-    <!--            fetch('/transit/mapOptimization', {-->
-    <!--                method: 'POST',-->
-    <!--                headers: { 'Content-Type': 'application/json' },-->
-    <!--                body: JSON.stringify({ transitIds: selectedIds })-->
-    <!--            })-->
-    <!--                .then(response => response.json())-->
-    <!--                .then(data => {-->
-    <!--                    if (data.success) {-->
-    <!--                        Swal.fire({-->
-    <!--                            title: '경로 최적화 완료!',-->
-    <!--                            text: `총 소요 시간: ${data.totalTime}, 총 비용: ${data.totalCost}`,-->
-    <!--                            icon: 'success',-->
-    <!--                            confirmButtonText: '확인'-->
-    <!--                        });-->
-    <!--                    } else {-->
-    <!--                        Swal.fire({-->
-    <!--                            title: '오류 발생!',-->
-    <!--                            text: data.message || '경로 계산 중 오류가 발생했습니다.',-->
-    <!--                            icon: 'error',-->
-    <!--                            confirmButtonText: '확인'-->
-    <!--                        });-->
-    <!--                    }-->
-    <!--                })-->
-    <!--                .catch(error => {-->
-    <!--                    Swal.fire({-->
-    <!--                        title: '서버 오류!',-->
-    <!--                        text: '서버와 통신 중 문제가 발생했습니다.',-->
-    <!--                        icon: 'error',-->
-    <!--                        confirmButtonText: '확인'-->
-    <!--                    });-->
-    <!--                });-->
-    <!--        }-->
-    <!--    </script>-->
-
-<!--&lt;!&ndash;    ===========Map API START=========    &ndash;&gt;-->
+<!--    ###############################################################################################-->
+<!--    ###############################################################################################-->
+<!--        ===========Map API START=========-->
 <!--    <script>-->
 <!--        function calculateRoute() {-->
 <!--            const selectedRows = document.querySelectorAll("input[name='select-row']:checked");-->
@@ -326,8 +285,77 @@
 <!--            // 서버로 선택된 배송 ID 전송-->
 <!--            fetch('/transit/mapOptimization', {-->
 <!--                method: 'POST',-->
-<!--                headers: { 'Content-Type': 'application/json' },-->
-<!--                body: JSON.stringify({ transitIds: selectedIds })-->
+<!--                headers: {'Content-Type': 'application/json'},-->
+<!--                body: JSON.stringify({transitIds: selectedIds})-->
+<!--            })-->
+<!--                .then(response => response.json())-->
+<!--                .then(data => {-->
+<!--                    if (data.success) {-->
+<!--                        Swal.fire({-->
+<!--                            title: '경로 최적화 완료!',-->
+<!--                            text: `총 소요 시간: ${data.totalTime}, 총 비용: ${data.totalCost}`,-->
+<!--                            icon: 'success',-->
+<!--                            confirmButtonText: '확인'-->
+<!--                        });-->
+<!--                    } else {-->
+<!--                        Swal.fire({-->
+<!--                            title: '오류 발생!',-->
+<!--                            text: data.message || '경로 계산 중 오류가 발생했습니다.',-->
+<!--                            icon: 'error',-->
+<!--                            confirmButtonText: '확인'-->
+<!--                        });-->
+<!--                    }-->
+<!--                })-->
+<!--                .catch(error => {-->
+<!--                    Swal.fire({-->
+<!--                        title: '서버 오류!',-->
+<!--                        text: '서버와 통신 중 문제가 발생했습니다.',-->
+<!--                        icon: 'error',-->
+<!--                        confirmButtonText: '확인'-->
+<!--                    });-->
+<!--                });-->
+<!--        }-->
+<!--    </script>-->
+
+<!--    &lt;!&ndash;    ===========Map API START=========    &ndash;&gt;-->
+<!--    <script>-->
+<!--        function calculateRoute() {-->
+<!--            const selectedRows = document.querySelectorAll("input[name='select-row']:checked");-->
+<!--            const selectedIds = Array.from(selectedRows).map(row => row.value);-->
+
+<!--            if (selectedIds.length === 0) {-->
+<!--                Swal.fire({-->
+<!--                    title: '선택된 배송 건이 없습니다.',-->
+<!--                    icon: 'warning',-->
+<!--                    confirmButtonText: '확인'-->
+<!--                });-->
+<!--                return;-->
+<!--            }-->
+
+<!--            // 배송 상태 확인-->
+<!--            let hasPendingStatus = false; // '배송대기' 상태 여부 확인-->
+<!--            selectedRows.forEach(row => {-->
+<!--                const statusCell = row.parentElement.parentElement.querySelector("td:nth-child(9)"); // 배송상태 열-->
+<!--                if (statusCell && statusCell.textContent.trim() === '배송대기') {-->
+<!--                    hasPendingStatus = true;-->
+<!--                }-->
+<!--            });-->
+
+<!--            if (hasPendingStatus) {-->
+<!--                Swal.fire({-->
+<!--                    title: '배송대기 상태는 처리할 수 없습니다.',-->
+<!--                    text: '배송승인 상태의 항목만 선택해주세요.',-->
+<!--                    icon: 'error',-->
+<!--                    confirmButtonText: '확인'-->
+<!--                });-->
+<!--                return; // 작업 중단-->
+<!--            }-->
+
+<!--            // 서버로 선택된 배송 ID 전송-->
+<!--            fetch('/transit/mapOptimization', {-->
+<!--                method: 'POST',-->
+<!--                headers: {'Content-Type': 'application/json'},-->
+<!--                body: JSON.stringify({transitIds: selectedIds})-->
 <!--            })-->
 <!--                .then(response => response.json())-->
 <!--                .then(data => {-->
@@ -375,6 +403,7 @@
             cursor: pointer;
             z-index: 1000;
         }
+
         #floating-button-approve:hover {
             background-color: #165a26;
         }
@@ -414,7 +443,7 @@
         /*    z-index: 1000;*/
         /*}*/
 
-        /*#floating-button-mapRoute:hover{*/
+        /*#floating-button-mapRoute:hover {*/
         /*    background-color: #1839b1;*/
         /*}*/
 
@@ -478,12 +507,7 @@
                 }
             });
         }
-
-
     </script>
-
-
-
 </th:block>
 
 </body>
