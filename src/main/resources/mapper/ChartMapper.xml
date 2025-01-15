@@ -5,7 +5,7 @@
 
 <mapper namespace="com.example.santa.home.mapper.ChartMapper">
 
-    <!-- (1)&(5) 월별 입고(Incoming), 출고(Outgoing), 재고(Warehouse_Inventory) 집계 예시 -->
+    <!--  월별 입고(Incoming), 출고(Outgoing), 재고(Warehouse_Inventory) 집계 -->
     <select id="getMonthlyInOutInvList" resultType="com.example.santa.home.vo.MonthlyInOutInvVO">
         SELECT
             M.monthVal AS month,
@@ -37,7 +37,7 @@
         ORDER BY M.monthVal
     </select>
 
-    <!-- (2) 창고별 재고량 -->
+    <!--  창고별 재고량 -->
     <select id="getWarehouseInventoryList" resultType="com.example.santa.home.vo.WarehouseInventoryVO">
         SELECT
             W.name AS warehouseName,
@@ -48,7 +48,7 @@
         ORDER BY W.warehouse_id
     </select>
 
-    <!-- (3) 카테고리별 재고량 -->
+    <!--  카테고리별 재고량 -->
     <select id="getCategoryInventoryList" resultType="com.example.santa.home.vo.CategoryInventoryVO">
         SELECT
             C.name AS categoryName,
@@ -60,7 +60,7 @@
         ORDER BY C.category_id
     </select>
 
-    <!-- (4) 월별 주문량 -->
+    <!--  월별 주문량 -->
     <select id="getMonthlyOrderList" resultType="com.example.santa.home.vo.MonthlyOrderVO">
         SELECT
             MONTH(order_date) AS month,
@@ -68,6 +68,35 @@
         FROM Orders
         GROUP BY MONTH(order_date)
         ORDER BY MONTH(order_date)
+    </select>
+
+
+    <!-- 주문 대기 수 -->
+    <select id="getPendingOrders" resultType="int">
+        SELECT COUNT(*) AS pendingOrders
+        FROM Orders
+        WHERE status = '대기';
+    </select>
+
+    <!-- 총 판매 금액 -->
+    <select id="getTotalSalesAmount" resultType="double">
+        SELECT SUM(quantity * price) AS totalSalesAmount
+        FROM Orders
+                 INNER JOIN Products ON Orders.product_id = Products.product_id
+        WHERE status = '승인';
+    </select>
+
+    <!-- 창고 총 자산 금액 -->
+    <select id="getWarehouseTotalAsset" resultType="double">
+        SELECT SUM(WI.quantity * P.price) AS warehouseTotalAsset
+        FROM Warehouse_Inventory WI
+                 INNER JOIN Products P ON WI.product_id = P.product_id;
+    </select>
+
+    <!-- 총 주문 수 -->
+    <select id="getTotalOrders" resultType="int">
+        SELECT COUNT(*) AS totalOrders
+        FROM Orders;
     </select>
 
 </mapper>

@@ -15,7 +15,7 @@
     <!-- 상단 제목 -->
     <div class="d-flex align-items-left flex-column pt-2 pb-4">
         <div>
-            <h3 class="fw-bold mb-3">Santa 1.0 System</h3>
+            <h3 class="fw-bold mb-3">Santa 1.0 Dashboard</h3>
         </div>
     </div>
 
@@ -33,8 +33,8 @@
                         </div>
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
-                                <p class="card-category">Visitors</p>
-                                <h4 class="card-title">1,294</h4>
+                                <p class="card-category">대기중인 주문</p>
+                                <h4 class="card-title" th:text="${pendingOrders}">0</h4>
                             </div>
                         </div>
                     </div>
@@ -54,8 +54,8 @@
                         </div>
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
-                                <p class="card-category">Subscribers</p>
-                                <h4 class="card-title">1,303</h4>
+                                <p class="card-category">총 판매 금액</p>
+                                <h4 class="card-title" th:text="${formattedTotalSalesAmount}">0</h4>
                             </div>
                         </div>
                     </div>
@@ -75,8 +75,8 @@
                         </div>
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
-                                <p class="card-category">Sales</p>
-                                <h4 class="card-title">$1,345</h4>
+                                <p class="card-category">창고 보유 총 자산</p>
+                                <h4 class="card-title" th:text="${formattedWarehouseTotalAsset}">0</h4>
                             </div>
                         </div>
                     </div>
@@ -96,8 +96,8 @@
                         </div>
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
-                                <p class="card-category">Order</p>
-                                <h4 class="card-title">576</h4>
+                                <p class="card-category">이번 달 주문수</p>
+                                <h4 class="card-title" th:text="${totalOrders}">0</h4>
                             </div>
                         </div>
                     </div>

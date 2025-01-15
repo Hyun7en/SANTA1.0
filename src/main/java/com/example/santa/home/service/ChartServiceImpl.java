@@ -35,4 +35,24 @@ public class ChartServiceImpl implements ChartService {
     public List<MonthlyOrderVO> getMonthlyOrderList() {
         return chartMapper.getMonthlyOrderList();
     }
+
+    @Override
+    public int getPendingOrders() {
+        return chartMapper.getPendingOrders();
+    }
+
+    @Override
+    public double getTotalSalesAmount() {
+        return chartMapper.getTotalSalesAmount();
+    }
+
+    @Override
+    public double getWarehouseTotalAsset() {
+        return chartMapper.getWarehouseTotalAsset();
+    }
+
+    @Override
+    public int getTotalOrders() {
+        return chartMapper.getTotalOrders();
+    }
 }

@@ -17,4 +17,11 @@ public interface ChartService {
 
     List<MonthlyOrderVO> getMonthlyOrderList();
 
+
+    int getPendingOrders();               // 주문 대기 수
+    double getTotalSalesAmount();         // 총 판매 금액
+    double getWarehouseTotalAsset();      // 창고 총 자산 금액
+    int getTotalOrders();                 // 총 주문 수
+
+
 }

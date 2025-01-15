@@ -11,15 +11,21 @@ import java.util.List;
 @Mapper
 public interface ChartMapper {
 
-    // (1) & (5) 월별 입/출/재고량
+    //  월별 입/출/재고량
     List<MonthlyInOutInvVO> getMonthlyInOutInvList();
 
-    // (2) 창고별 재고량
+    //  창고별 재고량
     List<WarehouseInventoryVO> getWarehouseInventoryList();
 
-    // (3) 카테고리별 재고량
+    //  카테고리별 재고량
     List<CategoryInventoryVO> getCategoryInventoryList();
 
-    // (4) 월별 주문량
+    //  월별 주문량
     List<MonthlyOrderVO> getMonthlyOrderList();
+
+    // 카드 인터페이스
+    int getPendingOrders();
+    double getTotalSalesAmount();
+    double getWarehouseTotalAsset();
+    int getTotalOrders();
 }

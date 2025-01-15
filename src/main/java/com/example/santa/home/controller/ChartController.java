@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 @Controller
@@ -35,10 +36,28 @@ public class ChartController {
         }
 
         // (3) Model에 담기
+
+
         model.addAttribute("monthlyInOutInvList", monthlyInOutInvList);
         model.addAttribute("warehouseInventoryList", warehouseInventoryList);
         model.addAttribute("categoryInventoryList", categoryInventoryList);
         model.addAttribute("monthlyOrderList", monthlyOrderList);
+
+        // 카드
+        int pendingOrders = chartService.getPendingOrders();
+        double totalSalesAmount = chartService.getTotalSalesAmount();
+        double warehouseTotalAsset = chartService.getWarehouseTotalAsset();
+
+
+        // DecimalFormat으로 포맷팅하고 "원" 추가
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+        String formattedTotalSalesAmount = decimalFormat.format(totalSalesAmount) + " 원";
+        String formattedWarehouseTotalAsset = decimalFormat.format(warehouseTotalAsset) + " 원";
+
+        model.addAttribute("pendingOrders", pendingOrders);
+        model.addAttribute("formattedTotalSalesAmount", formattedTotalSalesAmount);
+        model.addAttribute("formattedWarehouseTotalAsset", formattedWarehouseTotalAsset);
+        model.addAttribute("totalOrders", totalOrders);
 
         // 합계 계산 결과를 별도 변수에 담아 View로 전달
         model.addAttribute("totalOrders", totalOrders);
