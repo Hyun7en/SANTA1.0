@@ -121,6 +121,7 @@
         function readInventory() {
             sendRequest("/inventory/readInventory", "get", null, data => {
                 renderTable("tbody", data);
+
             });
         }
 
@@ -234,7 +235,7 @@
             const th = document.createElement("th");
             th.textContent = `창고 ${warehouseName}`;
             th.id = `warehouse-header-${warehouseId}`;
-            th.className = `class="text-center`;
+            th.className = `text-center`;
             thead.appendChild(th);
 
             // 2. 테이블 본문 업데이트
@@ -245,7 +246,7 @@
                     const td = document.createElement("td");
                     td.textContent = item.warehouseQuantity || 0; // 창고의 재고량
                     td.setAttribute("data-warehouse-id", warehouseId);
-                    td.className = `class="text-center`;
+                    td.className = `text-center`;
                     row.appendChild(td);
                 } else {
                     console.warn(`행 ${index + 1}을 찾을 수 없습니다.`);
