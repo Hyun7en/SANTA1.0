@@ -1,6 +1,6 @@
 package com.example.santa.order.controller;
 
-import com.example.santa.order.service.OrderService;
+import com.example.santa.order.service.OrderServiceInterface;
 import com.example.santa.order.vo.OrderDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -14,7 +14,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderService orderService;
+    private final OrderServiceInterface orderServiceInterface;
 
     //*************************************************
     //******************** 주문 조회 ********************
@@ -29,7 +29,7 @@ public class OrderController {
     @ResponseBody
     public List<OrderDTO> readOrder(){
 
-        List<OrderDTO> list = orderService.readOrder();
+        List<OrderDTO> list = orderServiceInterface.readOrder();
         return list;
     }
 
@@ -42,7 +42,7 @@ public class OrderController {
 
         System.out.println("받은 날짜: " + startDate + " ~ " + endDate);
 
-        List<OrderDTO> list = orderService.searchByOrderDate(startDate, endDate);
+        List<OrderDTO> list = orderServiceInterface.searchByOrderDate(startDate, endDate);
         return list;
     }
     
@@ -55,7 +55,7 @@ public class OrderController {
 
         String productName = orderDTO.getProductName().trim();
 
-        List<OrderDTO> list = orderService.searchByProductName(productName);
+        List<OrderDTO> list = orderServiceInterface.searchByProductName(productName);
         return list;
     }
 
@@ -68,7 +68,7 @@ public class OrderController {
 
         String branchName = orderDTO.getBranchName().trim();
 
-        List<OrderDTO> list = orderService.searchByBranchName(branchName);
+        List<OrderDTO> list = orderServiceInterface.searchByBranchName(branchName);
         return list;
     }
 
@@ -81,7 +81,7 @@ public class OrderController {
 
         String orderStatus = orderDTO.getOrderStatus().trim();
 
-        List<OrderDTO> list = orderService.searchByOrderStatus(orderStatus);
+        List<OrderDTO> list = orderServiceInterface.searchByOrderStatus(orderStatus);
         return list;
     }
 
@@ -98,7 +98,7 @@ public class OrderController {
     @GetMapping("readPendingOrders")
     @ResponseBody
     public List<OrderDTO> readPendingOrders(){
-        List<OrderDTO> list = orderService.readPendingOrders();
+        List<OrderDTO> list = orderServiceInterface.readPendingOrders();
         System.out.println("승인 대기 주문 list : " + list);
 
         return list;
@@ -117,7 +117,7 @@ public class OrderController {
 
         // 상태 변경 수행
         try {
-            int isUpdated = orderService.updateOrderStatus(orderId, orderStatus);
+            int isUpdated = orderServiceInterface.updateOrderStatus(orderId, orderStatus);
             if(isUpdated > 0 ) {
                 return true; // 상태 변경 성공 여부 반환
             }else{
@@ -138,7 +138,7 @@ public class OrderController {
         String endDate = dateRange.get("endDate");
         System.out.println("----- 승인 대기 주문, 주문 일자 검색 -----");
         System.out.println("Date : " + startDate + " ~ " + endDate);
-        List<OrderDTO> list = orderService.searchByPendingOrderDate(startDate, endDate);
+        List<OrderDTO> list = orderServiceInterface.searchByPendingOrderDate(startDate, endDate);
         return list;
     }
 
@@ -149,7 +149,7 @@ public class OrderController {
         String productName = orderDTO.getProductName().trim();
         System.out.println("----- 승인 대기 주문, 주문 상품 검색 -----");
         System.out.println("productName : " + productName);
-        List<OrderDTO> list = orderService.searchByPendingProductName(productName);
+        List<OrderDTO> list = orderServiceInterface.searchByPendingProductName(productName);
         return list;
     }
 
@@ -160,7 +160,7 @@ public class OrderController {
         String branchName = orderDTO.getBranchName().trim();
         System.out.println("----- 승인 대기 주문, 주문 지점 검색 -----");
         System.out.println("branchName : " + branchName);
-        List<OrderDTO> list = orderService.searchByPendingBranchName(branchName);
+        List<OrderDTO> list = orderServiceInterface.searchByPendingBranchName(branchName);
         return list;
     }
 

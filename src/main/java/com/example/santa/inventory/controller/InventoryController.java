@@ -1,22 +1,19 @@
 package com.example.santa.inventory.controller;
 
-import com.example.santa.inventory.service.InventoryService;
+import com.example.santa.inventory.service.InventoryServiceInterface;
 import com.example.santa.inventory.vo.InventoryDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("inventory")
 @RequiredArgsConstructor
 public class InventoryController {
 
-    private final InventoryService inventoryService;
+    private final InventoryServiceInterface inventoryService;
 
     //*************************************************
     //******************** 창고별 재고 조회 **************
