@@ -32,7 +32,7 @@
         JOIN
         Products p ON wi.product_id = p.product_id
         GROUP BY p.product_id, p.name
-        ORDER BY p.product_id;
+        ORDER BY p.product_id
     </select>
 
     <!-- 창고 이름 / 창고 아이디 list -->
@@ -96,20 +96,6 @@
         Manufacturers m ON p.manufacturer_id = m.manufacturer_id
         LEFT JOIN
         Warehouses w ON wi.warehouse_id = w.warehouse_id
-<!--        <where>-->
-<!--            <if test="productId != null">-->
-<!--                AND p.product_id = #{productId}-->
-<!--            </if>-->
-<!--            <if test="productName != null and productName != ''">-->
-<!--                AND p.name LIKE CONCAT('%', #{productName}, '%')-->
-<!--            </if>-->
-<!--            <if test="categoryId != null">-->
-<!--                AND p.category_id = #{categoryId}-->
-<!--            </if>-->
-<!--            <if test="warehouseId != null">-->
-<!--                AND w.warehouse_id = #{warehouseId}-->
-<!--            </if>-->
-<!--        </where>-->
         ORDER BY p.product_id
     </select>
 
