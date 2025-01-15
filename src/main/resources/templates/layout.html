@@ -5,6 +5,15 @@
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
     <title>SANTA1.0</title>
 
+    <!-- chart.js -->
+    <script src="/assets/js/plugin/chart.js/chart.min.js"></script>
+
+    <!-- sparkline -->
+    <script src="/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <link rel="icon" href="/assets/img/santa/santaLogo.png" type="image/x-icon" />
     <!-- Fonts and icons -->
     <script src="/assets/js/plugin/webfont/webfont.min.js"></script>
@@ -30,9 +39,6 @@
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/assets/css/plugins.min.css"/>
     <link rel="stylesheet" href="/assets/css/kaiadmin.min.css"/>
-
-    <!-- ★★ 추가: Chart.js 라이브러리 (이 파일이 반드시 차트 생성 코드보다 먼저 로드되어야 함) ★★ -->
-    <script src="/assets/js/plugin/chart.js/chart.min.js"></script>
 </head>
 <body>
 <div class="wrapper">
@@ -45,14 +51,14 @@
 
                 <!-- Logo image -->
                 <!-- login ok -->
-                <a href="/home/home" class="logo">
+                <a href="/home" class="logo">
                     <img
                             src="/assets/img/santa/santaLogo.png"
                             alt="navbar brand"
                             class="navbar-brand"
                             height="50"
                     />
-                    <span class="text-white fs-4">SANTA1.0</span>
+                    <span class="text-white fs-4" >SANTA1.0</span>
                 </a>
 
                 <!-- toggle -->
@@ -76,7 +82,11 @@
             <div class="sidebar-content">
                 <ul class="nav nav-secondary">
                     <li class="nav-item">
-                        <a href="/home" class="collapsed" aria-expanded="false">
+                        <a
+                                href="/home"
+                                class="collapsed"
+                                aria-expanded="false"
+                        >
                             <i class="fas fa-home"></i>
                             <p>Home</p>
                         </a>
@@ -96,7 +106,7 @@
                             <span class="caret"></span>
                         </a>
                         <div class="collapse" id="products">
-                            <ul class="nav nav-collapse">
+                            <ul class="nav nav-collapse ">
                                 <li>
                                     <a class="sidebar-link" href="/inventory/warehouseRead">
                                         <span class="sub-item">창고별 재고 조회</span>
@@ -158,6 +168,7 @@
                                         <span class="sub-item">주문 승인</span>
                                     </a>
                                 </li>
+
                             </ul>
                         </div>
                     </li>
@@ -208,7 +219,8 @@
                         </div>
                     </li>
 
-                    <!-- Menu6 (관리자 메뉴) -->
+                    <!-- Menu6 -->
+                    <!-- 권한이 root 관리자 일 시 보이는 menu -->
                     <li class="nav-item">
                         <a data-bs-toggle="collapse" href="#admin">
                             <i class="fas fa-users"></i>
@@ -222,7 +234,6 @@
                                         <span class="sub-item">직원 관리</span>
                                     </a>
                                 </li>
-                                <!-- 로그 관리 등 추가 가능 -->
                             </ul>
                         </div>
                     </li>
@@ -238,9 +249,15 @@
         <div class="main-header">
             <div class="main-header-logo">
                 <!-- Logo Header -->
+                <!-- 화면 크기 줄어들었을 시의 Header -->
                 <div class="logo-header" data-background-color="red">
-                    <a href="/home/home" class="logo">
-                        <img src="/assets/img/santa/santaLogo.png" alt="navbar brand" class="navbar-brand" height="20" />
+                    <a href="/home" class="logo">
+                        <img
+                                src="/assets/img/santa/santaLogo.png"
+                                alt="navbar brand"
+                                class="navbar-brand"
+                                height="20"
+                        />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -258,35 +275,141 @@
             <!-- End Logo Header -->
 
             <!-- Navbar Header -->
-            <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+            <nav
+                    class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom"
+            >
                 <div class="container-fluid">
-                    <nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
+                    <nav
+                            class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex"
+                    >
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <button type="submit" class="btn btn-search pe-1">
                                     <i class="fa fa-search search-icon"></i>
                                 </button>
                             </div>
-                            <input type="text" placeholder="Search ..." class="form-control" />
+                            <input
+                                    type="text"
+                                    placeholder="Search ..."
+                                    class="form-control"
+                            />
                         </div>
                     </nav>
 
-                    <!-- Topbar -->
+                    <!-- topbar 시작 -->
                     <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                        <li class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" aria-haspopup="true">
+                        <li
+                                class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none"
+                        >
+                            <a
+                                    class="nav-link dropdown-toggle"
+                                    data-bs-toggle="dropdown"
+                                    href="#"
+                                    role="button"
+                                    aria-expanded="false"
+                                    aria-haspopup="true"
+                            >
                                 <i class="fa fa-search"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-search animated fadeIn">
                                 <form class="navbar-left navbar-form nav-search">
                                     <div class="input-group">
-                                        <input type="text" placeholder="Search ..." class="form-control" />
+                                        <input
+                                                type="text"
+                                                placeholder="Search ..."
+                                                class="form-control"
+                                        />
                                     </div>
                                 </form>
                             </ul>
                         </li>
 
-                        <!-- 로그인/사용자 정보 관련 -->
+                        <!-- 알람 메세지 기능 코드 넣는 곳 (시간 남으면 구현할 것 ) -->
+
+                        <!-- 빠른 이동 -->
+                        <li class="nav-item topbar-icon dropdown hidden-caret">
+                            <a
+                                    class="nav-link"
+                                    data-bs-toggle="dropdown"
+                                    href="#"
+                                    aria-expanded="false"
+                            >
+                                <i class="fas fa-layer-group"></i>
+                            </a>
+                            <div class="dropdown-menu quick-actions animated fadeIn">
+                                <div class="quick-actions-header">
+                                    <span class="title mb-1">Quick Actions</span>
+                                    <span class="subtitle op-7">Shortcuts</span>
+                                </div>
+                                <div class="quick-actions-scroll scrollbar-outer">
+                                    <div class="quick-actions-items">
+                                        <div class="row m-0">
+                                            <a class="col-6 col-md-4 p-0" href="/notice/notice">
+                                                <div class="quick-actions-item">
+                                                    <div class="avatar-item bg-danger rounded-circle">
+                                                        <i class="far fa-calendar-alt"></i>
+                                                    </div>
+                                                    <span class="text">공지사항</span>
+                                                </div>
+                                            </a>
+                                            <a class="col-6 col-md-4 p-0" href="/board/board">
+                                                <div class="quick-actions-item">
+                                                    <div
+                                                            class="avatar-item bg-warning rounded-circle"
+                                                    >
+                                                        <i class="fas fa-clipboard"></i>
+                                                    </div>
+                                                    <span class="text">자유 게시판</span>
+                                                </div>
+                                            </a>
+                                            <a class="col-6 col-md-4 p-0" href="/inventory/warehouseRead">
+                                                <div class="quick-actions-item">
+                                                    <div class="avatar-item bg-info rounded-circle">
+                                                        <i class="fas fa-layer-group"></i>
+                                                    </div>
+                                                    <span class="text">창고별 재고 조회</span>
+                                                </div>
+                                            </a>
+                                            <a class="col-6 col-md-4 p-0" href="/order/approval">
+                                                <div class="quick-actions-item">
+                                                    <div
+                                                            class="avatar-item bg-success rounded-circle"
+                                                    >
+                                                        <i class="fas fa-clipboard-check"></i>
+                                                    </div>
+                                                    <span class="text">주문 승인</span>
+                                                </div>
+                                            </a>
+                                            <a class="col-6 col-md-4 p-0" href="/outgoing/outgoingApprove">
+                                                <div class="quick-actions-item">
+                                                    <div
+                                                            class="avatar-item bg-primary rounded-circle"
+                                                    >
+                                                        <i class="fas fa-check-square"></i>
+                                                    </div>
+                                                    <span class="text">출고 승인</span>
+                                                </div>
+                                            </a>
+                                            <a class="col-6 col-md-4 p-0" href="/transit/transitApprove">
+                                                <div class="quick-actions-item">
+                                                    <div
+                                                            class="avatar-item bg-secondary rounded-circle"
+                                                    >
+                                                        <i class="fas fa-truck"></i>
+                                                    </div>
+                                                    <span class="text">배송 승인</span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <!-- 빠른 이동 끝 -->
+
+                        <!-- 로그인 시 바뀜 -->
+                        <!-- *************************************** Start Login *************************************** -->
+                        <!-- 로그인 여부에 따라 표시 -->
                         <li class="nav-item topbar-user dropdown hidden-caret" id="user-info" style="display: none;">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 <img src="/assets/img/user/IMG_1131.JPG" alt="User Avatar" class="rounded-circle" height="30" />
@@ -306,12 +429,7 @@
                             </ul>
                         </li>
 
-                        <!-- 로그인 버튼 (필요시 사용) -->
-                        <li class="nav-item topbar-user hidden-caret" id="login-button" style="display: none;">
-                            <a class="nav-link" href="/login">
-                                <span>로그인</span>
-                            </a>
-                        </li>
+                        <!-- *************************************** End Login *************************************** -->
 
                     </ul>
                 </div>
@@ -320,9 +438,9 @@
         <!-- *************************************** End Header *************************************** -->
 
         <!-- *************************************** Start content *************************************** -->
-        <div class="container">
+        <div class="container" >
             <div class="page-inner" layout:fragment="content">
-                <!-- 여기에 개별 페이지 내용이 들어갈 예정 (home.html의 내용 삽입) -->
+
             </div>
         </div>
         <!-- *************************************** End content *************************************** -->
@@ -360,7 +478,7 @@
                     </ul>
                 </nav>
                 <div class="copyright">
-                    2025, made with by SANTA
+                    2025, made with by SANTA</a>
                 </div>
             </div>
         </footer>
@@ -368,7 +486,6 @@
     </div>
 
 </div>
-
 <!-- JS -->
 <!-- Bootstrap core JS-->
 <script src="/assets/js/core/jquery-3.7.1.min.js"></script>
@@ -397,73 +514,73 @@
 <script src="/assets/js/kaiadmin.min.js"></script>
 
 <script>
-    // DOMContentLoaded 이벤트를 이용해 DOM 완전히 로드 후 실행
-    document.addEventListener("DOMContentLoaded", function() {
-        // 사용자 정보를 가져오는 API 호출 및 DOM 존재 확인
-        const userInfoElement = document.getElementById('user-info');
-        const usernameElement = document.getElementById('username');
-        const loginButtonElement = document.getElementById('login-button');
-        const logoutButtonElement = document.getElementById('logout');
+    const userInfoElement = document.getElementById('user-info');
+    const usernameElement = document.getElementById('username');
+    const loginButtonElement = document.getElementById('login-button');
+    const logoutButtonElement = document.getElementById('logout');
 
-        axios.get('/api/login/user')
-            .then(response => {
-                const user = response.data;
-                if(userInfoElement) {
-                    userInfoElement.style.display = 'flex';
-                }
-                if(usernameElement) {
-                    usernameElement.innerText = user.name;
-                }
-                // 로그인 버튼이 존재하면 숨김
-                if(loginButtonElement) {
-                    loginButtonElement.style.display = 'none';
-                }
-            })
-            .catch(error => {
-                console.error("사용자 정보를 가져오지 못했습니다:", error);
-                if(loginButtonElement) {
-                    loginButtonElement.style.display = 'flex';
-                }
-                if(userInfoElement) {
-                    userInfoElement.style.display = 'none';
-                }
-            });
+    // 사용자 정보를 가져오는 API 호출
+    axios.get('/api/login/user')
+        .then(response => {
+            const user = response.data;
 
-        if (logoutButtonElement) {
-            logoutButtonElement.addEventListener('click', function (e) {
-                e.preventDefault();
-                axios.post('/login/logout')
-                    .then(() => {
-                        window.location.href = "/login";
-                    })
-                    .catch(error => {
-                        console.error("로그아웃 실패:", error);
-                        alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
-                    });
-            });
-        }
+            // 사용자 정보 표시
+            userInfoElement.style.display = 'flex';
+            usernameElement.innerText = user.name; // 사용자 이름 설정
 
-        // Sidebar active 링크 처리 함수
-        function addSidebar() {
-            const currentPath = location.pathname;
-            const sidebarLinks = document.querySelectorAll(".sidebar-link");
-            sidebarLinks.forEach(link => {
-                if (link.getAttribute("href") === currentPath) {
-                    link.classList.add("active");
-                    const parentCollapse = link.closest(".collapse");
-                    if (parentCollapse) {
-                        parentCollapse.classList.add("show");
-                    }
+            // 로그인 버튼 숨기기
+            loginButtonElement.style.display = 'none';
+        })
+        .catch(error => {
+            console.error("사용자 정보를 가져오지 못했습니다:", error);
+
+            // 로그인 버튼 표시
+            loginButtonElement.style.display = 'flex';
+            userInfoElement.style.display = 'none';
+        });
+
+    // 로그아웃 처리
+    if (logoutButtonElement) {
+        logoutButtonElement.addEventListener('click', function (e) {
+            e.preventDefault();
+            axios.post('/login/logout')
+                .then(() => {
+                    // 서버 리다이렉트에 따라 페이지 이동
+                    window.location.href = "/login";
+                })
+                .catch(error => {
+                    console.error("로그아웃 실패:", error);
+                    alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
+                });
+        });
+    };
+
+    //sidebar toggle func
+    function addSidebar() {
+        // 현재 URL 가져오기
+        const currentPath = location.pathname;
+
+        // 모든 사이드바 링크 가져오기
+        const sidebarLinks = document.querySelectorAll(".sidebar-link");
+
+        // 링크 중 현재 URL과 일치하는 항목에 'active' 추가
+        sidebarLinks.forEach(link => {
+            if (link.getAttribute("href") === currentPath) {
+                link.classList.add("active");
+                const parentCollapse = link.closest(".collapse");
+                if (parentCollapse) {
+                    parentCollapse.classList.add("show"); // 부모 메뉴 펼치기
                 }
-            });
-        }
-        addSidebar();
-    });
+            }
+        });
+    };
+
+    addSidebar();
+
 </script>
-
 <!-- Core theme JS-->
 <th:block layout:fragment="script">
-    <!-- 이 영역은 페이지별 스크립트 (home.html)에서 삽입할 부분 -->
+
 </th:block>
 
 </body>
