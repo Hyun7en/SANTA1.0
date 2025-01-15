@@ -5,6 +5,7 @@ import com.example.santa.outgoing.vo.OutgoingDTO;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,5 +34,18 @@ public class OutgoingService {
     public List<OutgoingDTO> findOutgoingByDate(@Param("startDate") String startDate,
                                                 @Param("endDate") String endDate){
         return outgoingMapper.findOutgoingByDate(startDate,endDate);
+    }
+
+    @Transactional
+    public void approveOutgoing(List<Integer> outgoingIds) {
+        // 출고 상태를 '완료'로 업데이트
+        outgoingMapper.updateOutgoingStatus(outgoingIds);
+
+        // Transit 테이블에 배송 대기 데이터 추가
+        outgoingMapper.insertTransitRecords(outgoingIds);
+    }
+
+    public void rejectOutgoing(List<Integer> outgoingIds) {
+        outgoingMapper.updateOutgoingStatus(outgoingIds);
     }
 }

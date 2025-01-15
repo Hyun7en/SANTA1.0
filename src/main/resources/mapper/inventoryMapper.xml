@@ -8,6 +8,8 @@
         <result property="productName" column="product_name"/>
         <result property="capacity" column="capacity"/>
         <result property="inventoryQuantity" column="inventory_quantity"/>
+        <result property="totalInventory" column="total_inventory"/>
+        <result property="warehouseId" column="warehouse_id"/>
         <result property="warehouseName" column="warehouse_name"/>
         <result property="warehouseQuantity" column="warehouse_quantity"/>
         <result property="categoryName" column="category_name"/>
@@ -19,13 +21,54 @@
     <!--    ******************** 창고별 재고 조회 **************-->
     <!--    *************************************************-->
     <!-- 창고별 재고 list(창고id 있을 시/없을 시) -->
-    <select id="readInventory">
-
+    <!-- 상품 ID, 상품명, 창고당 상품의 전체 재고량 조회 -->
+    <select id="readInventory" parameterType="map" resultMap="WarehouseInventoryResultMap">
+        SELECT
+        p.product_id AS product_id,
+        p.name AS product_name,
+        SUM(wi.quantity) AS total_inventory
+        FROM
+        Warehouse_Inventory wi
+        JOIN
+        Products p ON wi.product_id = p.product_id
+        GROUP BY p.product_id, p.name
+        ORDER BY p.product_id
     </select>
 
-    <!-- 상품명 검색 -->
+    <!-- 창고 이름 / 창고 아이디 list -->
+    <select id="getWarehouseList" parameterType="map" resultMap="WarehouseInventoryResultMap">
+        SELECT
+            warehouse_id AS warehouse_id,
+            name AS warehouse_name
+        FROM
+            Warehouses
+        ORDER BY warehouse_id
+    </select>
 
-    <!-- 창고 row 추가 -->
+    <!-- 창고 column 추가 -->
+    <select id="addWarehouse" parameterType="map" resultMap="WarehouseInventoryResultMap">
+        SELECT
+            COALESCE((
+                         SELECT
+                             SUM(wi_inner.quantity)
+                         FROM
+                             Warehouse_Inventory wi_inner
+                         WHERE
+                             wi_inner.product_id = p.product_id
+                           AND wi_inner.warehouse_id = #{warehouseId}
+                     ), 0) AS warehouse_quantity
+        FROM
+            Warehouse_Inventory wi
+                JOIN
+            Products p ON wi.product_id = p.product_id
+        GROUP BY
+            p.product_id, p.name
+        ORDER BY
+            p.product_id
+    </select>
+
+
+    <!-- 창고 column 삭제 -->
 
     <!--    *************************************************-->
     <!--    ******************** 품목별 재고 조회 **************-->
@@ -53,20 +96,6 @@
         Manufacturers m ON p.manufacturer_id = m.manufacturer_id
         LEFT JOIN
         Warehouses w ON wi.warehouse_id = w.warehouse_id
-<!--        <where>-->
-<!--            <if test="productId != null">-->
-<!--                AND p.product_id = #{productId}-->
-<!--            </if>-->
-<!--            <if test="productName != null and productName != ''">-->
-<!--                AND p.name LIKE CONCAT('%', #{productName}, '%')-->
-<!--            </if>-->
-<!--            <if test="categoryId != null">-->
-<!--                AND p.category_id = #{categoryId}-->
-<!--            </if>-->
-<!--            <if test="warehouseId != null">-->
-<!--                AND w.warehouse_id = #{warehouseId}-->
-<!--            </if>-->
-<!--        </where>-->
         ORDER BY p.product_id
     </select>
 

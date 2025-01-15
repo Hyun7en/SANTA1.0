@@ -3,11 +3,13 @@ package com.example.santa.inventory.controller;
 import com.example.santa.inventory.service.InventoryService;
 import com.example.santa.inventory.vo.InventoryDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("inventory")
@@ -29,26 +31,39 @@ public class InventoryController {
 
     //창고별 재고 list
     @GetMapping("readInventory")
-    public List<InventoryDTO> readInventory() {
-
-        return null;
-    }
-
-    //상품명 검색
-    @PostMapping("searchByProductName")
     @ResponseBody
-    public List<InventoryDTO> searchByProductName(String productName) {
-
-        return null;
+    public List<InventoryDTO> readInventory() {
+        List<InventoryDTO> list = inventoryService.readInventory();
+        System.out.println("======= 창고별 재고 list =======");
+        System.out.println(list);
+        return list;
     }
-    
-    //창고 row 추가
+
+    //창고 list 선택
+    @GetMapping("warehouseList")
+    @ResponseBody
+    public List<InventoryDTO> getWarehouseList() {
+        List<InventoryDTO> list = inventoryService.getWarehouseList();
+        System.out.println("====== 창고 list ======");
+        System.out.println(list);
+        return list;
+    }
+
+    //창고 column 추가
     @PostMapping("addWarehouse")
     @ResponseBody
-    public List<InventoryDTO> addWarehouse(String warehouseName) {
+    public List<InventoryDTO> addWarehouse(@RequestBody  InventoryDTO inventoryDTO ) {
+        int warehouseId = inventoryDTO.getWarehouseId();
 
-        return null;
+        System.out.println("warehouseId : " + warehouseId);
+        List<InventoryDTO> list = inventoryService.addWarehouse(warehouseId);
+        System.out.println("========= 창고 column 추가 =========");
+        System.out.println(list);
+
+        return list;
     }
+
+    //창고 column 삭제
     
     //*************************************************
     //******************** 품목별 재고 조회 **************

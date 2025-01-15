@@ -20,4 +20,14 @@ public interface OutgoingMapper {
     // 4. 날짜별 출고 조회
     List<OutgoingDTO> findOutgoingByDate(@Param("startDate") String startDate,
                                          @Param("endDate") String endDate);
+
+    // 5. 출고 승인시 상태(대기->완료) 업데이트
+    void updateOutgoingStatus(@Param("outgoingIds") List<Integer> outgoingIds);
+
+    // 5.5 출고 거절시 상태(대기->거절) 업데이트
+    void updateOutgoingStatusRejection(@Param("outgoingIds") List<Integer> outgoingIds);
+
+    // 6. Transit 테이블에 배송 대기 데이터 추가
+    void insertTransitRecords(@Param("outgoingIds") List<Integer> outgoingIds);
 }
+

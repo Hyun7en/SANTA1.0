@@ -32,42 +32,6 @@
                     <div class="card-header bg-danger text-white text-center">
                         <h4 class="card-title m-0">🎄 배송 조회 🎅</h4>
                     </div>
-                    <!--        <div class="card-body bg-white">-->
-                    <!--           필터 섹션 -->
-                    <!--          <div class="p-3 bg-light border rounded">-->
-                    <!--            <div class="row g-3">-->
-                    <!--              &lt;!&ndash; 출고일자 / 입고->출고&ndash;&gt;-->
-                    <!--              <div class="col-md-6 d-flex align-items-center">-->
-                    <!--                <label for="start-date" class="form-label fw-bold text-success me-2 mb-0">출고일자</label>-->
-                    <!--                <input type="date" id="start-date" class="form-control w-50 me-2">-->
-                    <!--                <input type="date" id="end-date" class="form-control w-25 me-2">-->
-                    <!--                <button class="btn btn-danger">검색</button>-->
-                    <!--              </div>-->
-
-                    <!--              &lt;!&ndash; 카테고리 &ndash;&gt;-->
-                    <!--              <div class="col-md-6 d-flex align-items-center">-->
-                    <!--                <label for="category" class="form-label fw-bold text-success me-2 mb-0">카테고리</label>-->
-                    <!--                <input type="text" id="category" class="form-control w-75 me-2">-->
-                    <!--                <button class="btn btn-danger">검색</button>-->
-                    <!--              </div>-->
-
-                    <!--              &lt;!&ndash; 창고 &ndash;&gt;-->
-                    <!--              <div class="col-md-6 d-flex align-items-center">-->
-                    <!--                <label for="warehouse" class="form-label fw-bold text-success me-2 mb-0">창고</label>-->
-                    <!--                <input type="text" id="warehouse" class="form-control w-75 me-2">-->
-                    <!--                <button class="btn btn-danger">검색</button>-->
-                    <!--              </div>-->
-
-                    <!--              &lt;!&ndash; 지점 &ndash;&gt;-->
-                    <!--              <div class="col-md-6 d-flex align-items-center">-->
-                    <!--                <label for="branchName" class="form-label fw-bold text-success me-2 mb-0">지점</label>-->
-                    <!--                <input type="text" id="branchName" class="form-control w-75 me-2">-->
-                    <!--                <button class="btn btn-danger">검색</button>-->
-                    <!--              </div>-->
-
-                    <!--            </div>-->
-                    <!--          </div>-->
-                    <!--        </div>-->
                 </div>
             </div>
         </div>
@@ -81,7 +45,7 @@
                     <tr>
                         <th>배송ID</th>
                         <th>배송날짜</th>
-                        <th>베송수량</th>
+                        <th>배송수량</th>
                         <th>창고이름</th>
                         <th>창고주소</th>
                         <th>지점이름</th>
@@ -99,7 +63,13 @@
                         <td th:text="${TransitDTO.warehouseLocation}" class="text-center"></td>
                         <td th:text="${TransitDTO.branchName}" class="text-center"></td>
                         <td th:text="${TransitDTO.branchLocation}" class="text-center"></td>
-                        <td th:text="${TransitDTO.transitStatus}" class="text-center"></td>
+                        <td th:text="${TransitDTO.transitStatus}"
+                            th:classappend="${TransitDTO.transitStatus == '배송완료' ? 'text-success fw-bold'
+                             : (TransitDTO.transitStatus == '배송중' ? 'text-warning fw-bord'
+                             : (TransitDTO.transitStatus == '배송대기' ? 'text-primary fw-bord'
+                             : (TransitDTO.transitStatus == '배송승인' ? 'text-info fw-bord'
+                             : (TransitDTO.transitStatus == '배송거절' ? 'text-danger fw-bord' : ''))))}"
+                            class="text-center"></td>
                     </tr>
                     </tbody>
                 </table>

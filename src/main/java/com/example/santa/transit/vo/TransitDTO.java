@@ -39,4 +39,9 @@ public class TransitDTO {
    private double warehouseLongitude;
    private double branchLatitude;
    private double branchLongitude;
+
+   private String totalTime; // 총 소요 시간
+   private String totalCost; // 총 비용
+   private double totalDistance; // 총 거리
+
 }

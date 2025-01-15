@@ -29,29 +29,20 @@
     <div class="row g-4">
         <!-- 필터 카드 -->
         <div class="col-lg-12">
-            <div class="card border-success h-100">
-                <div class="card-header bg-danger text-white text-center">
-                    <h4 class="card-title m-0">창고별 재고 조회</h4>
-                </div>
-                <div class="card-body bg-white">
-                    <div class="p-3 bg-light border rounded">
-                        <div class="row g-3 align-items-center">
-                            <!-- 상품명 검색 -->
-                            <div class="col-md-9 d-flex align-items-center">
-                                <label for="product-name" class="form-label fw-bold text-success me-3 mb-0" style="white-space: nowrap;">
-                                    상품명
-                                </label>
-                                <input type="text" id="product-name" class="form-control me-3" placeholder="상품명을 입력하세요">
-                                <button class="btn btn-danger text-nowrap px-4" onclick="searchByProductName()">검색</button>
-                            </div>
-
-                            <!-- 버튼 정렬 -->
-                            <div class="col-md-3 d-flex justify-content-end">
-                                <button class="btn btn-primary me-2" onclick="addWarehouse()">창고 추가</button>
-                                <button class="btn btn-primary px-4" onclick="readInventory()">전체 조회</button>
-                            </div>
-                        </div>
+            <div class="card border-success">
+                <!-- 카드 헤더 -->
+                <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                    <!-- 제목 -->
+                    <h4 class="card-title m-0 text-center flex-grow-1">품목별 재고 조회</h4>
+                    <!-- 버튼 -->
+                    <div style="position: relative; display: inline-block;">
+                        <button class="btn btn-primary btn-lg px-4 ms-3" onclick="addWarehouse()">창고 추가</button>
+                        <select id="warehouseSelect" class="form-select" size="5"
+                                style="display: none; position: absolute; top: 100%; left: 0; z-index: 1000; width: 200px; border: 1px solid #ccc; background-color: #fff; border-radius: 5px;">
+                            <!-- 창고 옵션이 동적으로 추가됩니다 -->
+                        </select>
                     </div>
+                    <button class="btn btn-primary btn-lg px-4 ms-3" onclick="readInventory()">전체 조회</button>
                 </div>
             </div>
         </div>
@@ -64,9 +55,9 @@
             >
                 <thead>
                 <tr id="">
-                    <th>상품ID</th>
-                    <th>상품명</th>
-                    <th>재고수량</th>
+                    <th class="text-center">상품ID</th>
+                    <th class="text-center">상품명</th>
+                    <th class="text-center">재고수량</th>
                     <!-- 창고별 재고 수량 추가 할 수 있게 -->
                 </tr>
                 </thead>
@@ -81,7 +72,6 @@
 </body>
 <th:block layout:fragment="script">
     <script>
-
         //중복 되는 코드 부분 처리
         // 공통: Axios 요청 처리
         function sendRequest(url, method, data, callback) {
@@ -116,10 +106,10 @@
 
                 body += `
             <tr>
-                <td class="text-center">${item.productId}</td>
+                <td id="warehouseProductId" class="text-center">${item.productId}</td>
                 <td class="text-center">${item.productName}</td>
-                <td class="text-center">${item.inventoryQuantity}</td>
-                <td></td> <!-- 창고 추가 가능 -->
+                <td class="text-center">${item.totalInventory}</td>
+                <!-- 창고 추가 가능 -->
             </tr>
         `;
             });
@@ -131,31 +121,142 @@
         function readInventory() {
             sendRequest("/inventory/readInventory", "get", null, data => {
                 renderTable("tbody", data);
+
             });
         }
 
-        // 상품명 검색
-        function searchByProductName() {
-            const productName = document.getElementById("product-name").value;
+        //창고 추가
+        function addWarehouse() {
+            axios.get("/inventory/warehouseList")
+                .then(response => {
+                    console.log(response.data);
+                    const select = document.getElementById("warehouseSelect");
+                    if (!select) {
+                        console.error("창고 리스트 select 요소를 찾을 수 없습니다.");
+                        return;
+                    }
 
-            if (!productName) {
-                swal("", "상품명을 입력해주세요.", {
-                    buttons: {
-                        confirm: {
-                            className: 'btn btn-danger'
-                        }
-                    },
+                    // 데이터를 가져와 select 옵션으로 동적 추가
+                    const warehouses = response.data;
+                    if (warehouses.length > 0) {
+                        select.innerHTML = ""; // 기존 옵션 초기화
+                        warehouses.forEach(warehouse => {
+                            const option = document.createElement("option");
+                            option.value = warehouse.warehouseId; // 창고 ID
+                            option.textContent = warehouse.warehouseName; // 창고 이름
+                            select.appendChild(option);
+                        });
+
+                        // select 표시
+                        select.style.display = "block";
+                    } else {
+                        select.innerHTML = "<option>창고 리스트가 비어 있습니다.</option>";
+                        select.style.display = "block";
+                    }
+                })
+                .catch(error => {
+                    console.error("창고 리스트를 불러오는 중 오류 발생:", error);
+                    const select = document.getElementById("warehouseSelect");
+                    if (select) {
+                        select.innerHTML = "<option>오류가 발생했습니다.</option>";
+                        select.style.display = "block";
+                    }
                 });
+        }
+
+        // 창고 리스트 select를 숨기는 기능 (선택을 취소하거나 외부 클릭 시)
+        document.addEventListener("click", event => {
+            const select = document.getElementById("warehouseSelect");
+            const addButton = document.querySelector(".btn[onclick='addWarehouse()']");
+            if (select && !select.contains(event.target) && event.target !== addButton) {
+                select.style.display = "none"; // 외부 클릭 시 숨김
+            }
+        });
+
+        // 창고 선택 시 addSelectedWarehouse 실행
+        document.addEventListener("DOMContentLoaded", () => {
+            const select = document.getElementById("warehouseSelect");
+            if (select) {
+                select.addEventListener("change", addSelectedWarehouse);
+            }
+        });
+
+        //창고 list에서 선택시 column 추가
+        function addSelectedWarehouse() {
+            const select = document.getElementById("warehouseSelect");
+            if (!select) {
+                console.error("창고 리스트 select 요소를 찾을 수 없습니다.");
                 return;
             }
 
-            sendRequest("/inventory/searchByProductName", "post", { productName }, data => {
-                renderTable("tbody", data);
+            const selectedOption = select.options[select.selectedIndex];
+            if (!selectedOption || !selectedOption.value) {
+                console.error("선택된 창고가 없습니다.");
+                return;
+            }
+
+            const warehouseId = selectedOption.value; // 선택된 창고 ID
+            const warehouseName = selectedOption.textContent; // 선택된 창고 이름
+
+
+            // 비동기로 해당 창고의 상품 재고 데이터를 가져와 테이블 업데이트
+            axios.post("/inventory/addWarehouse",{
+                warehouseId})
+                .then(response =>{
+                    const warehouseData = response.data;
+                    console.log("받은 데이터:", warehouseData);
+
+                    // 테이블 업데이트
+                    updateTableWithWarehouseData(warehouseId, warehouseName, warehouseData);
+
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+
+        }
+
+        // 테이블에 새 창고 열 추가
+        function updateTableWithWarehouseData(warehouseId, warehouseName, warehouseData) {
+            const table = document.getElementById("basic-datatables");
+            if (!table) {
+                console.error("테이블을 찾을 수 없습니다.");
+                return;
+            }
+
+            const thead = table.querySelector("thead tr");
+            const tbody = table.querySelector("tbody");
+
+            // 1. 테이블 헤더에 새 창고 열 추가 (중복 방지)
+            if (document.getElementById(`warehouse-header-${warehouseId}`)) {
+                console.warn(`창고 ${warehouseName}는 이미 추가되었습니다.`);
+                return;
+            }
+            const th = document.createElement("th");
+            th.textContent = `창고 ${warehouseName}`;
+            th.id = `warehouse-header-${warehouseId}`;
+            th.className = `text-center`;
+            thead.appendChild(th);
+
+            // 2. 테이블 본문 업데이트
+            const rows = tbody.querySelectorAll("tr");
+            warehouseData.forEach((item, index) => {
+                const row = rows[index]; // 순서대로 매칭
+                if (row) {
+                    const td = document.createElement("td");
+                    td.textContent = item.warehouseQuantity || 0; // 창고의 재고량
+                    td.setAttribute("data-warehouse-id", warehouseId);
+                    td.className = `text-center`;
+                    row.appendChild(td);
+                } else {
+                    console.warn(`행 ${index + 1}을 찾을 수 없습니다.`);
+                }
             });
         }
 
-        //자신이 관리할 창고 추가 할 수 있는 함수
-        function addWarehouse(){
+
+        //삭제 버튼 누르면 column 삭제
+        function deleteWarehouse(){
 
         }
 
