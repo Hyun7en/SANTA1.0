@@ -21,13 +21,13 @@ public class ChartController {
 
     @GetMapping("/home")
     public String home(Model model) {
-        // (1) DB에서 차트 데이터 조회
+        // DB에서 차트 데이터 조회
         List<MonthlyInOutInvVO> monthlyInOutInvList = chartService.getMonthlyInOutInvList();
         List<WarehouseInventoryVO> warehouseInventoryList = chartService.getWarehouseInventoryList();
         List<CategoryInventoryVO> categoryInventoryList = chartService.getCategoryInventoryList();
         List<MonthlyOrderVO> monthlyOrderList = chartService.getMonthlyOrderList();
 
-        // (2) '월별 주문량'의 총합
+        // '월별 주문량'의 총합
         int totalOrders = 0;
         if (monthlyOrderList != null) {
             totalOrders = monthlyOrderList.stream()
@@ -35,9 +35,7 @@ public class ChartController {
                     .sum();
         }
 
-        // (3) Model에 담기
-
-
+        // Model에 담기
         model.addAttribute("monthlyInOutInvList", monthlyInOutInvList);
         model.addAttribute("warehouseInventoryList", warehouseInventoryList);
         model.addAttribute("categoryInventoryList", categoryInventoryList);
