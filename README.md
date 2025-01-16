@@ -138,8 +138,9 @@
 
 | 대시보드 |
 |----------|
-|![join](https://github.com/user-attachments/assets/65299d24-857c-4f5d-8fdb-8f5e03341473)|
-|![join](https://github.com/user-attachments/assets/d9bdf7d8-1dbc-46fd-9daa-6f21136808ca)|
+|<img width="1708" alt="스크린샷 2025-01-16 14 50 20" src="https://github.com/user-attachments/assets/5271481b-9592-48dc-8f9d-2a595b86af7c" />|
+|<img width="1708" alt="스크린샷 2025-01-16 14 50 43" src="https://github.com/user-attachments/assets/bd50c450-ae37-49e4-b7c2-80ef10a45a61" />|
+
 
 <br>
 
