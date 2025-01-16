@@ -59,7 +59,8 @@
 - **UI**
     - 페이지 : 배송 관리, 출고 관리, Tmap API(경로 최적화)
 - **기능**
-    - 주일님 샬롬!
+    - 배송 조회, 승인&거절, 선택된 배송 건의 경로 최적화(예상 시간, 배송 비용 확인 가능)
+    - 출고 조회, 승인&거절
 
 <br>
 
@@ -77,7 +78,7 @@
 - **UI**
     - 페이지 : 게시판
 - **기능**
-    - 게시판 작성, 수정, 삭제, 댓글 작성
+    - 게시판 작성, 댓글작성 및 수정/삭제 
     
 <br>
 
@@ -204,14 +205,26 @@
 |![join](https://github.com/user-attachments/assets/ef421282-52a5-468a-9c14-d1869c02b085)|
 |![join](https://github.com/user-attachments/assets/5f1b4397-a1da-47ab-90a9-8739c9af8dce)|
 |![join](https://github.com/user-attachments/assets/6bc9c9e8-8601-4195-a206-0bb8271597f0)|
-|![join](https://github.com/user-attachments/assets/dcf0f4f1-5227-4dd2-8b75-5b04a6ffb483)|
+|![join](https://github.com/user-attachments/assets/dcf0f4f1-5227-4dd2-8b75-5b04a6ffb483)
 
 <br>
 
 ### [자유게시판]
 
 | 자유게시판 |
-|----------|
+|----------| 
+|![join](https://github.com/user-attachments/assets/b3cb3a60-0ae4-4a0b-932e-73fb7b5c0112)| 
+|![join](https://github.com/user-attachments/assets/7f38179a-ef4f-4ab8-aad0-569be80ed1c1)| 
+![join](https://github.com/user-attachments/assets/9cdc27d6-e104-49b9-8980-cc0c27277ced)| 
+![join](https://github.com/user-attachments/assets/70703806-84b6-4651-b927-182310cf0ace)| 
+![join](https://github.com/user-attachments/assets/c235c73e-5578-41aa-a119-fc35a306b5b9)| 
+![join](https://github.com/user-attachments/assets/ef4bc544-72e9-40a3-8e62-0ee2cdd7a1ad)|
+
+
+
+
+
+                            
 
 <br>
 

@@ -17,9 +17,13 @@ public class LoginApiController {
     public ResponseEntity<?> getUser(HttpSession session) {
         UserDetailsVO userDetails = (UserDetailsVO) session.getAttribute("userDetails");
         if (userDetails != null) {
+            // 디버깅: 사용자 정보 출력
+            System.out.println("User ID: " + userDetails.getUserId());
+            System.out.println("User Role: " + userDetails.getRole());
             return ResponseEntity.ok(userDetails); // 사용자 정보 반환
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
         }
     }
 }
+
